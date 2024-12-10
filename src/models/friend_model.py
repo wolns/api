@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .user_model import User
 
 
-class Friend(BaseUUIDModel):
+class Friend(BaseUUIDModel, table=True):
     follower_uuid: UUID = Field(default=None, foreign_key="user.uuid")
     follower: "User" = Relationship(back_populates="follows", sa_relationship_kwargs={"lazy": "selectin"})
 
