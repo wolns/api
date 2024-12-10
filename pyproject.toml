@@ -11,6 +11,7 @@ fastapi = "^0.115.6"
 asyncpg = "^0.30.0"
 sqlalchemy = "^2.0.36"
 uvicorn = "^0.32.1"
+sqlmodel = "^0.0.22"
 
 
 [build-system]
