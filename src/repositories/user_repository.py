@@ -10,4 +10,4 @@ class UserRepository(BaseRepository[User]):
     async def get_by_login(self, login: str) -> User:
         query = select(self.model).where(self.model.login == login)
         response = await self.session.exec(query)
-        return response
+        return response.one_or_none()
