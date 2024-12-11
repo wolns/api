@@ -10,8 +10,14 @@ if TYPE_CHECKING:
 
 
 class Subscription(BaseUUIDModel, table=True):
-    follower_uuid: UUID = Field(default=None, foreign_key="User.uuid")
-    follower: "User" = Relationship(back_populates="follows", sa_relationship_kwargs={"lazy": "selectin"})
+    subscriber_uuid: UUID = Field(default=None, foreign_key="User.uuid")
+    subscriber: "User" = Relationship(
+        back_populates="subscribed",
+        sa_relationship_kwargs={"lazy": "selectin", "foreign_keys": "Subscription.subscriber_uuid"},
+    )
 
-    followes_uuid: UUID = Field(default=None, foreign_key="User.uuid")
-    followes: "User" = Relationship(back_populates="followers", sa_relationship_kwargs={"lazy": "selectin"})
+    subscribed_uuid: UUID = Field(default=None, foreign_key="User.uuid")
+    subscribed: "User" = Relationship(
+        back_populates="subscribers",
+        sa_relationship_kwargs={"lazy": "selectin", "foreign_keys": "Subscription.subscribed_uuid"},
+    )

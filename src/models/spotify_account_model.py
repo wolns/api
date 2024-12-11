@@ -15,4 +15,7 @@ class SpotifyAccount(BaseUUIDModel, table=True):
     refresh_token: str = Field(sa_column=Column(String(100), nullable=False))
 
     user_uuid: UUID = Field(default=None, foreign_key="User.uuid")
-    user: "User" = Relationship(back_populates="spotify_account", sa_relationship_kwargs={"lazy": "selectin"})
+    user: "User" = Relationship(
+        back_populates="spotify_account",
+        sa_relationship_kwargs={"lazy": "selectin"},
+    )
