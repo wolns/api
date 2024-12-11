@@ -1,14 +1,18 @@
 from pydantic import BaseModel
 
 
-class YandexMusicAccountBodySchema(BaseModel):
+class AccountBodySchema(BaseModel):
+    pass
+
+
+class YandexMusicAccountBodySchema(AccountBodySchema):
     token: str
 
 
-class SpotifyAccountBodySchema(BaseModel):
+class SpotifyAccountBodySchema(AccountBodySchema):
     token: str
     refresh_token: str
 
 
-class VkMusicAccountBodySchema(BaseModel):
+class VkMusicAccountBodySchema(AccountBodySchema):
     token: str
