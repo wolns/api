@@ -1,23 +1,31 @@
 from uuid import UUID
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from fastapi.params import Depends
 
-from src.schemas.user_schemas import UserGetResponseSchema, UserPostResponseSchema
+from src.schemas.user_schemas import UserPostBodySchema, UserResponseSchema
+from src.services.user_service import UserService, get_user_service
 
 users_router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @users_router.post("/")
-async def create_user() -> UserPostResponseSchema:
+async def register_user(
+    data: UserPostBodySchema, user_service: UserService = Depends(get_user_service)
+) -> UserResponseSchema:
     """
     User registration
 
     :return:
     """
+    user = await user_service.register_user(data)
+    if not user:
+        raise HTTPException(status_code=400, detail="User already exists")
+    return await user_service.to_response_schema(user)
 
 
 @users_router.get("/me")
-async def get_me() -> UserGetResponseSchema:
+async def get_me() -> UserResponseSchema:
     """
     Get user information
     TOKEN Required

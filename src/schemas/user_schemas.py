@@ -12,10 +12,10 @@ class UserBaseUUIDSchema(UserBaseSchema):
     uuid: UUID
 
 
-class UserGetResponseSchema(UserBaseUUIDSchema):
+class UserResponseSchema(UserBaseUUIDSchema):
     subscribed: list[UserBaseUUIDSchema]
     subscribers: list[UserBaseUUIDSchema]
 
 
-class UserPostResponseSchema(UserBaseSchema):
+class UserPostBodySchema(UserBaseSchema):
     password: str
