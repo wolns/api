@@ -13,8 +13,7 @@ class UserBaseUUIDSchema(UserBaseSchema):
 
 
 class UserResponseSchema(UserBaseUUIDSchema):
-    subscribed: list[UserBaseUUIDSchema]
-    subscribers: list[UserBaseUUIDSchema]
+    pass
 
 
 class UserPostBodySchema(UserBaseSchema):

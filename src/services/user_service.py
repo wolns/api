@@ -7,7 +7,7 @@ from src.database.database import get_async_session
 from src.models import User
 from src.repositories.user_repository import UserRepository
 from src.schemas.token_schemas import TokenPostBodySchema
-from src.schemas.user_schemas import UserBaseUUIDSchema, UserPostBodySchema, UserResponseSchema
+from src.schemas.user_schemas import UserPostBodySchema, UserResponseSchema
 from src.utils.security import get_plain_hash
 
 
@@ -34,13 +34,7 @@ class UserService:
         return await self.user_repository.get(user_uuid)
 
     async def to_response_schema(self, user: User) -> UserResponseSchema:
-        return UserResponseSchema(
-            uuid=user.uuid,
-            name=user.name,
-            login=user.login,
-            subscribed=[UserBaseUUIDSchema.model_validate(sub) for sub in user.subscribed],
-            subscribers=[UserBaseUUIDSchema.model_validate(sub) for sub in user.subscribers],
-        )
+        return UserResponseSchema(uuid=user.uuid, name=user.name, login=user.login)
 
 
 async def get_user_service(session: AsyncSession = Depends(get_async_session)):
