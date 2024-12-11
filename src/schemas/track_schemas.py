@@ -1,0 +1,27 @@
+from enum import Enum
+
+from src.models.base_model import BaseModel
+
+
+class ServiceType(str, Enum):
+    YANDEX_MUSIC = "yandex_music"
+    SPOTIFY = "spotify"
+    VK_MUSIC = "vk_music"
+
+
+class TrackBaseSchema(BaseModel):
+    user_name: str
+    status: str
+    service_type: ServiceType
+
+    title: str
+    artists: str
+    cover: str
+
+
+class TrackGetSchema(TrackBaseSchema):
+    pass
+
+
+class TracksGetSchema(BaseModel):
+    tracks: list[TrackGetSchema]
