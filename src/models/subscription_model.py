@@ -9,9 +9,9 @@ if TYPE_CHECKING:
     from .user_model import User
 
 
-class Friend(BaseUUIDModel, table=True):
-    follower_uuid: UUID = Field(default=None, foreign_key="user.uuid")
+class Subscription(BaseUUIDModel, table=True):
+    follower_uuid: UUID = Field(default=None, foreign_key="User.uuid")
     follower: "User" = Relationship(back_populates="follows", sa_relationship_kwargs={"lazy": "selectin"})
 
-    followes_uuid: UUID = Field(default=None, foreign_key="user.uuid")
+    followes_uuid: UUID = Field(default=None, foreign_key="User.uuid")
     followes: "User" = Relationship(back_populates="followers", sa_relationship_kwargs={"lazy": "selectin"})
