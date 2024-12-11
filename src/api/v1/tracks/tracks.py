@@ -1,12 +1,12 @@
 from fastapi import APIRouter
 
-from src.schemas.track_schemas import TrackGetSchema, TracksGetSchema
+from src.schemas.track_schemas import TrackGetResponseSchema, TracksGetResponseSchema
 
 tracks_router = APIRouter(prefix="/tracks", tags=["Tracks"])
 
 
 @tracks_router.get("/listening-status")
-async def get_listening_status() -> TrackGetSchema:
+async def get_listening_status() -> TrackGetResponseSchema:
     """
     Getting random listening status.
 
@@ -15,7 +15,7 @@ async def get_listening_status() -> TrackGetSchema:
 
 
 @tracks_router.get("/listening-statuses")
-async def get_listening_statuses() -> TracksGetSchema:
+async def get_listening_statuses() -> TracksGetResponseSchema:
     """
     Getting all listening statuses.
 

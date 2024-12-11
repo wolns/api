@@ -19,9 +19,9 @@ class TrackBaseSchema(BaseModel):
     cover: str
 
 
-class TrackGetSchema(TrackBaseSchema):
+class TrackGetResponseSchema(TrackBaseSchema):
     pass
 
 
-class TracksGetSchema(BaseModel):
-    tracks: list[TrackGetSchema]
+class TracksGetResponseSchema(BaseModel):
+    tracks: list[TrackGetResponseSchema]
