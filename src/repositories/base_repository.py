@@ -11,22 +11,25 @@ T = TypeVar("T")
 class BaseRepository(Generic[T], ABC):
     model: type[T]
 
-    async def get(self, session: AsyncSession, uuid: UUID | str) -> T | None:
+    def __init__(self, session: AsyncSession) -> None:
+        self.session = session
+
+    async def get(self, uuid: UUID | str) -> T | None:
         query = select(self.model).where(self.model.uuid == uuid)
-        response = await session.exec(query)
+        response = await self.session.exec(query)
         return response.one_or_none()
 
-    async def get_all(self, session: AsyncSession) -> list[T]:
+    async def get_all(self) -> list[T]:
         query = select(self.model)
-        response = await session.exec(query)
+        response = await self.session.exec(query)
         return response.all()
 
-    async def add(self, session: AsyncSession, obj: T) -> T:
-        session.add(obj)
-        await session.commit()
-        await session.refresh(obj)
+    async def add(self, obj: T) -> T:
+        self.session.add(obj)
+        await self.session.commit()
+        await self.session.refresh(obj)
         return obj
 
-    async def delete(self, session: AsyncSession, obj: T) -> None:
-        await session.delete(obj)
-        await session.commit()
+    async def delete(self, obj: T) -> None:
+        await self.session.delete(obj)
+        await self.session.commit()
