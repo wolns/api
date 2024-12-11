@@ -5,6 +5,7 @@ from fastapi.params import Depends
 
 from src.schemas.user_schemas import UserPostBodySchema, UserResponseSchema
 from src.services.user_service import UserService, get_user_service
+from src.utils.jwt import get_current_user_uuid
 
 users_router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -25,13 +26,17 @@ async def register_user(
 
 
 @users_router.get("/me")
-async def get_me() -> UserResponseSchema:
+async def get_me(
+    user_uuid: UUID = Depends(get_current_user_uuid), user_service: UserService = Depends(get_user_service)
+) -> UserResponseSchema:
     """
     Get user information
     TOKEN Required
 
     :return:
     """
+    user = await user_service.get_user_by_uuid(user_uuid)
+    return await user_service.to_response_schema(user)
 
 
 @users_router.post("/{user_uuid}/subscribe")
