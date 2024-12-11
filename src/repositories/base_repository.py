@@ -1,22 +1,32 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Generic, TypeVar
+from uuid import UUID
+
+from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 T = TypeVar("T")
 
 
-class BaseRepository(ABC, Generic[T]):
-    @abstractmethod
-    async def get_all(self) -> list[T]:
-        pass
+class BaseRepository(Generic[T], ABC):
+    model: type[T]
 
-    @abstractmethod
-    async def get(self, entity_uuid: str) -> T | None:
-        pass
+    async def get(self, session: AsyncSession, uuid: UUID | str) -> T | None:
+        query = select(self.model).where(self.model.uuid == uuid)
+        response = await session.exec(query)
+        return response.one_or_none()
 
-    @abstractmethod
-    async def save(self, entity: T) -> None:
-        pass
+    async def get_all(self, session: AsyncSession) -> list[T]:
+        query = select(self.model)
+        response = await session.exec(query)
+        return response.all()
 
-    @abstractmethod
-    async def delete(self, entity: T) -> None:
-        pass
+    async def add(self, session: AsyncSession, obj: T) -> T:
+        session.add(obj)
+        await session.commit()
+        await session.refresh(obj)
+        return obj
+
+    async def delete(self, session: AsyncSession, obj: T) -> None:
+        await session.delete(obj)
+        await session.commit()
