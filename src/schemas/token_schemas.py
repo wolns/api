@@ -2,7 +2,7 @@ from src.models.base_model import BaseModel
 
 
 class TokenPostResponseSchema(BaseModel):
-    jwt_token: str
+    access_token: str
 
 
 class TokenPostBodySchema(BaseModel):
