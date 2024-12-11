@@ -1,6 +1,15 @@
 from pydantic.v1 import BaseSettings
 
 
+class JWTSettings(BaseSettings):
+    jwt_secret: str
+    jwt_algorithm: str = "HS256"
+    jwt_expires_minutes: int = 60 * 24  # 1 day
+
+    class Config:
+        extra = "allow"
+
+
 class Settings(BaseSettings):
     ENV: str = "prod"
     PROJECT_NAME: str = "wolns-API"
@@ -11,6 +20,10 @@ class Settings(BaseSettings):
     postgres_user: str
     postgres_password: str
     postgres_db: str
+
+    jwt_secret: str
+    jwt_algorithm: str
+    jwt_expires_minutes: int
 
     class Config:
         extra = "allow"
