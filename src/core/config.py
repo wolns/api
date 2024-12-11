@@ -13,7 +13,6 @@ class Settings(BaseSettings):
     postgres_db: str
 
     class Config:
-        env_file = ".env"
         extra = "allow"
         case_sensitive = False
 
@@ -30,7 +29,6 @@ class PostgresSettings(BaseSettings):
 
     class Config:
         extra = "allow"
-        env_file = ".env"
 
 
 def get_postgres_settings():
