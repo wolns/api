@@ -16,7 +16,7 @@ class SubscriptionRepository(BaseRepository[Subscription]):
         response = await self.session.exec(query)
         return response.one_or_none()
 
-    async def get_subscriptions(self, user_uuid: UUID) -> list[User]:
+    async def get_subscribed(self, user_uuid: UUID) -> list[User]:
         query = (
             select(User)
             .join(Subscription, User.uuid == Subscription.subscribed_uuid)

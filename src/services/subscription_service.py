@@ -32,8 +32,8 @@ class SubscriptionService:
         await self.subscription_repository.delete(subscription)
         return True
 
-    async def get_subscriptions(self, user_uuid: UUID) -> list[User]:
-        return await self.subscription_repository.get_subscriptions(user_uuid)
+    async def get_subscribed(self, user_uuid: UUID) -> list[User]:
+        return await self.subscription_repository.get_subscribed(user_uuid)
 
     async def get_subscribers(self, user_uuid: UUID) -> list[User]:
         return await self.subscription_repository.get_subscribers(user_uuid)
