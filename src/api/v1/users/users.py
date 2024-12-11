@@ -3,6 +3,10 @@ from uuid import UUID
 from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
 
+from src.schemas.subscription_schemas import (
+    SubscribedGetResponseSchema,
+    SubscribersGetResponseSchema,
+)
 from src.schemas.user_schemas import UserPostBodySchema, UserResponseSchema
 from src.services.subscription_service import SubscriptionService, get_subscriptions_service
 from src.services.user_service import UserService, get_user_service
@@ -38,6 +42,24 @@ async def get_me(
     """
     user = await user_service.get_user_by_uuid(user_uuid)
     return await user_service.to_response_schema(user)
+
+
+@users_router.get("/me/subscribed")
+async def get_subscriptions(
+    current_user_uuid: UUID = Depends(get_current_user_uuid),
+    subscription_service: SubscriptionService = Depends(get_subscriptions_service),
+) -> SubscribedGetResponseSchema:
+    subscribed = await subscription_service.get_subscribed(current_user_uuid)
+    return SubscribedGetResponseSchema(subscribed=subscribed)
+
+
+@users_router.get("/me/subscribers")
+async def get_subscribers(
+    current_user_uuid: UUID = Depends(get_current_user_uuid),
+    subscription_service: SubscriptionService = Depends(get_subscriptions_service),
+) -> SubscribersGetResponseSchema:
+    subscribers = await subscription_service.get_subscribers(current_user_uuid)
+    return SubscribersGetResponseSchema(subscribers=subscribers)
 
 
 @users_router.post("/{user_uuid}/subscribe")
