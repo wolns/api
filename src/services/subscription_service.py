@@ -4,7 +4,7 @@ from fastapi.params import Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.database.database import get_async_session
-from src.models import Subscription
+from src.models import Subscription, User
 from src.repositories.subscription_repository import SubscriptionRepository
 
 
@@ -31,6 +31,12 @@ class SubscriptionService:
 
         await self.subscription_repository.delete(subscription)
         return True
+
+    async def get_subscriptions(self, user_uuid: UUID) -> list[User]:
+        return await self.subscription_repository.get_subscriptions(user_uuid)
+
+    async def get_subscribers(self, user_uuid: UUID) -> list[User]:
+        return await self.subscription_repository.get_subscribers(user_uuid)
 
 
 async def get_subscriptions_service(session: AsyncSession = Depends(get_async_session)) -> SubscriptionService:
