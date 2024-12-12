@@ -26,5 +26,41 @@ services:
       - wolns-postgres-data:/var/lib/postgresql/data
     restart: always
 
+  nginx:
+    image: nginx:latest
+    container_name: wolns-nginx
+    profiles:
+      - prod
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/letsencrypt
+      - ./nginx/ssl-data:/data/letsencrypt
+    depends_on:
+      - wolns_api
+    restart: always
+
+  certbot:
+    image: certbot/certbot
+    container_name: wolns-certbot
+    profiles:
+      - prod
+    volumes:
+      - ./nginx/ssl:/etc/letsencrypt
+      - ./nginx/ssl-data:/data/letsencrypt
+    depends_on:
+      - nginx
+    entrypoint: >
+      /bin/sh -c "
+      if [ ! -d /etc/letsencrypt/live/wolns.fadegor05.ru ]; then
+        certbot certonly --webroot --webroot-path=/data/letsencrypt -d wolns.fadegor05.ru --agree-tos --register-unsafely-without-email;
+        nginx -s reload;
+      fi;
+      trap exit TERM;
+      while :; do sleep 6h & wait $${!}; certbot renew; done"
+    restart: always
+
 volumes:
   wolns-postgres-data:

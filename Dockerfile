@@ -12,4 +12,4 @@ RUN poetry install
 
 COPY . ./
 
-CMD ["poetry", "run", "uvicorn", "--factory", "src:create_app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["poetry", "run", "uvicorn", "--factory", "src:create_app", "--host", "0.0.0.0", "--port", "2000"]
