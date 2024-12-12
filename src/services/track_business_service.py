@@ -42,12 +42,14 @@ class TrackBusinessService:
 
         return recent_tracks
 
-    async def get_subscribed_track_by_user_uuid(self, user_uuid: UUID) -> Track:
+    async def get_subscribed_track_by_user_uuid(self, user_uuid: UUID) -> Track | None:
         recent_tracks = await self.get_subscribed_recently_tracks_by_user_uuid(user_uuid)
         if len(recent_tracks) > 0:
             return random.choice(recent_tracks)  # noqa: S311
 
         subscribed_users = await self.subscription_service.get_subscribed(user_uuid)
+        if len(subscribed_users) == 0:
+            return None
         random_subscribed = random.choice(subscribed_users)  # noqa: S311
         return await self.track_service.get_track_by_user_uuid(random_subscribed.uuid)
 
