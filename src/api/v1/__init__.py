@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from .auth.auth import auth_router
 from .health_check.health_check import health_check_router
+from .spotify.spotify import spotify_router
 from .tracks.tracks import tracks_router
 from .users.users import users_router
 
@@ -10,6 +11,7 @@ subrouters = (
     tracks_router,
     users_router,
     auth_router,
+    spotify_router,
 )
 
 v1_router = APIRouter(prefix="/v1")

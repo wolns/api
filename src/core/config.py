@@ -34,6 +34,10 @@ class Settings(BaseSettings):
     jwt_algorithm: str
     jwt_expires_minutes: int
 
+    spotify_client_id: str
+    spotify_client_secret: str
+    spotify_redirect_uri: str
+
     class Config:
         extra = "allow"
         case_sensitive = False
