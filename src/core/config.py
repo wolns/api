@@ -10,9 +10,18 @@ class JWTSettings(BaseSettings):
         extra = "allow"
 
 
+class TimezoneSettings(BaseSettings):
+    tz: str
+
+    class Config:
+        extra = "allow"
+
+
 class Settings(BaseSettings):
     ENV: str = "prod"
     PROJECT_NAME: str = "wolns-API"
+
+    tz: str
 
     backend_port: str
 
@@ -50,3 +59,7 @@ def get_postgres_settings():
 
 def get_settings():
     return Settings()
+
+
+def get_timezone_settings():
+    return TimezoneSettings()
