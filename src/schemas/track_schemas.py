@@ -11,7 +11,7 @@ class ServiceType(str, Enum):
 
 class TrackBaseSchema(BaseModel):
     user_name: str
-    status: str
+    is_playing: bool
     service_type: ServiceType
 
     title: str

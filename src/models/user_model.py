@@ -8,6 +8,7 @@ from src.models.base_model import BaseUUIDModel
 if TYPE_CHECKING:
     from .spotify_account_model import SpotifyAccount
     from .subscription_model import Subscription
+    from .track_model import Track
     from .vk_music_account_model import VkMusicAccount
     from .yandex_music_account_model import YandexMusicAccount
 
@@ -16,6 +17,11 @@ class User(BaseUUIDModel, table=True):
     name: str = Field(sa_column=Column(String(100), nullable=False))
     login: str = Field(sa_column=Column(String(100), nullable=False))
     hashed_password: str = Field(sa_column=Column(String(100), nullable=True))
+
+    track: "Track" = Relationship(
+        back_populates="user",
+        sa_relationship_kwargs={"lazy": "selectin"},
+    )
 
     subscribed: list["Subscription"] = Relationship(
         back_populates="subscriber",

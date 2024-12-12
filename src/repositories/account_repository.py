@@ -11,7 +11,7 @@ T = TypeVar("T")
 
 
 class BaseAccountRepository(BaseRepository[BaseAccount], ABC):
-    async def get_by_user_uuid(self, user_uuid: UUID | str) -> T:
+    async def get_by_user_uuid(self, user_uuid: UUID | str) -> T | None:
         query = select(self.model).where(self.model.user_uuid == user_uuid)
         response = await self.session.exec(query)
         return response.one_or_none()

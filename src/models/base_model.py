@@ -1,8 +1,11 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy.orm import declared_attr
+from sqlalchemy import DateTime
+from sqlalchemy.orm import declared_attr, validates
 from sqlmodel import Field, SQLModel
+
+from src.core.timezone import tz
 
 
 class BaseModel(SQLModel):
@@ -13,5 +16,12 @@ class BaseModel(SQLModel):
 
 class BaseUUIDModel(BaseModel):
     uuid: UUID = Field(default_factory=uuid4, primary_key=True, index=True, nullable=False)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
+    created_at: datetime = Field(
+        sa_type=DateTime(timezone=True),
+        default_factory=lambda: datetime.now(tz),
+    )
+    updated_at: datetime = Field(sa_type=DateTime(timezone=True), default_factory=lambda: datetime.now(tz))
+
+    @validates("updated_at")
+    def validate_updated_at(self, key, value):
+        return datetime.now(tz)

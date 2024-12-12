@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 from uuid import UUID
 
 import jwt
@@ -8,11 +8,12 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from starlette import status
 
 from src.core.config import JWTSettings
+from src.core.timezone import tz
 
 
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
-    expire = datetime.now(UTC) + timedelta(days=1)
+    expire = datetime.now(tz) + timedelta(days=1)
     to_encode.update({"exp": int(expire.timestamp())})
 
     jwt_settings = JWTSettings()
