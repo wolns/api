@@ -12,7 +12,6 @@ if TYPE_CHECKING:
 
 
 class Track(BaseUUIDModel, table=True):
-    is_playing: bool = Field(default=True, nullable=False)
     service_type: ServiceType = Field(nullable=False)
 
     title: str = Field(sa_column=Column(String(100), nullable=False))
