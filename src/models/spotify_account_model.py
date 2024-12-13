@@ -10,8 +10,8 @@ if TYPE_CHECKING:
 
 
 class SpotifyAccount(BaseAccount, table=True):
-    token: str = Field(sa_column=Column(String(100), nullable=False))
-    refresh_token: str = Field(sa_column=Column(String(100), nullable=False))
+    access_token: str = Field(sa_column=Column(String(400), nullable=False))
+    refresh_token: str = Field(sa_column=Column(String(400), nullable=False))
 
     user: "User" = Relationship(
         back_populates="spotify_account",

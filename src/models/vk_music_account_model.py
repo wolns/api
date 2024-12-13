@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class VkMusicAccount(BaseAccount, table=True):
-    token: str = Field(sa_column=Column(String(100), nullable=False))
+    token: str = Field(sa_column=Column(String(400), nullable=False))
 
     user: "User" = Relationship(
         back_populates="vk_music_account",
