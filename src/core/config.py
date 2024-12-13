@@ -25,6 +25,8 @@ class Settings(BaseSettings):
 
     backend_port: str
 
+    redis_port: str
+
     postgres_port: str
     postgres_user: str
     postgres_password: str
@@ -37,6 +39,21 @@ class Settings(BaseSettings):
     class Config:
         extra = "allow"
         case_sensitive = False
+
+
+class RedisSettings(BaseSettings):
+    redis_port: str
+
+    @property
+    def redis_url(self) -> str:
+        return f"redis://redis:{self.redis_port}/"
+
+    @property
+    def broker_url(self) -> str:
+        return f"{self.redis_url}0"
+
+    class Config:
+        extra = "allow"
 
 
 class PostgresSettings(BaseSettings):
@@ -63,3 +80,7 @@ def get_settings():
 
 def get_timezone_settings():
     return TimezoneSettings()
+
+
+def get_redis_settings():
+    return RedisSettings()
