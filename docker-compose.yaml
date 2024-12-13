@@ -43,6 +43,8 @@ services:
   celery_worker:
     build: .
     container_name: wolns-celery-worker
+    profiles:
+      - celery
     command: poetry run celery -A src.core.celery worker --loglevel=info --concurrency=5
     env_file:
       - .env
@@ -56,6 +58,8 @@ services:
   celery_beat:
     build: .
     container_name: wolns-celery-beat
+    profiles:
+      - celery
     command: poetry run celery -A src.core.celery beat --loglevel=info
     env_file:
       - .env

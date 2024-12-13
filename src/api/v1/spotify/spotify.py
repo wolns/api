@@ -3,7 +3,6 @@ from fastapi import APIRouter, Depends, Query
 from src.schemas.account_schemas import SpotifyAccountBodySchema
 from src.schemas.spotify_schemas import (
     SpotifyAuthResponseSchema,
-    SpotifyCallbackResponseSchema,
 )
 from src.schemas.track_schemas import TrackBaseInfo
 from src.services.music_services.spotify_service import SpotifyService, get_spotify_service
@@ -20,12 +19,8 @@ async def spotify_login(spotify_service: SpotifyService = Depends(get_spotify_se
 @spotify_router.get("/callback")
 async def spotify_callback(
     code: str = Query(...), spotify_service: SpotifyService = Depends(get_spotify_service)
-) -> SpotifyCallbackResponseSchema:
-    tokens = await spotify_service.get_tokens(code)
-    return SpotifyCallbackResponseSchema(
-        access_token=tokens["access_token"],
-        refresh_token=tokens["refresh_token"],
-    )
+) -> SpotifyAccountBodySchema:
+    return await spotify_service.get_tokens(code)
 
 
 # TEST PURPOSES ONLY

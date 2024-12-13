@@ -6,11 +6,13 @@ import aiohttp
 from yandex_music import ClientAsync
 
 from src.schemas.account_schemas import YandexMusicAccountBodySchema
-from src.schemas.track_schemas import TrackBaseInfo
+from src.schemas.track_schemas import ServiceType, TrackBaseInfo
 from src.services.music_service import MusicService
 
 
 class YandexMusicService(MusicService):
+    service_type = ServiceType.YANDEX_MUSIC
+
     async def track_from_ynison(self, yandex_music_client: ClientAsync, ynison):
         try:
             track = ynison["player_state"]["player_queue"]["playable_list"][

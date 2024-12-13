@@ -5,11 +5,13 @@ from fastapi import HTTPException
 
 from src.core.config import get_spotify_settings
 from src.schemas.account_schemas import SpotifyAccountBodySchema
-from src.schemas.track_schemas import TrackBaseInfo
+from src.schemas.track_schemas import ServiceType, TrackBaseInfo
 from src.services.music_service import MusicService
 
 
 class SpotifyService(MusicService):
+    service_type = ServiceType.SPOTIFY
+
     def __init__(self):
         spotify_settings = get_spotify_settings()
         self.client_id = spotify_settings.spotify_client_id
@@ -47,7 +49,7 @@ class SpotifyService(MusicService):
             async with session.post(self.token_url, headers=headers, data=data) as response:
                 if response.status != 200:
                     raise HTTPException(status_code=400, detail="Failed to get tokens")
-                return await SpotifyAccountBodySchema.model_validate(response.json())
+                return SpotifyAccountBodySchema.model_validate(await response.json())
 
     async def get_current_track(self, obj: SpotifyAccountBodySchema) -> TrackBaseInfo | None:
         headers = {"Authorization": f"Bearer {obj.access_token}"}
