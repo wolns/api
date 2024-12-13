@@ -24,3 +24,9 @@ class TrackRepository(BaseRepository[Track]):
         query = select(Track).where(Track.user_uuid == user_uuid, Track.updated_at > threshold_time)
         response = await self.session.exec(query)
         return response.one_or_none()
+
+    async def get_update_tracks(self, minutes: int = 1) -> list[T]:
+        threshold_time = datetime.now(tz) - timedelta(minutes=minutes)
+        query = select(Track).where(Track.updated_at < threshold_time)
+        response = await self.session.exec(query)
+        return response.all()
