@@ -9,14 +9,16 @@ class ServiceType(str, Enum):
     VK_MUSIC = "vk_music"
 
 
-class TrackBaseSchema(BaseModel):
-    user_name: str
-    is_playing: bool
-    service_type: ServiceType
-
+class TrackBaseInfo(BaseModel):
     title: str
     artists: str
     cover: str
+
+
+class TrackBaseSchema(TrackBaseInfo):
+    user_name: str
+    is_playing: bool
+    service_type: ServiceType
 
 
 class TrackGetResponseSchema(TrackBaseSchema):

@@ -10,7 +10,7 @@ class YandexMusicAccountBodySchema(AccountBodySchema):
 
 
 class SpotifyAccountBodySchema(AccountBodySchema):
-    token: str
+    access_token: str
     refresh_token: str
 
 

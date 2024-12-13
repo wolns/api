@@ -16,6 +16,8 @@ pyjwt = "^2.10.1"
 pytz = "^2024.2"
 celery = "^5.4.0"
 redis = "^5.2.1"
+aiohttp = "^3.11.10"
+
 
 
 [build-system]
