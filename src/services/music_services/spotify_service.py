@@ -75,6 +75,31 @@ class SpotifyService(MusicService):
                     cover=data["item"]["album"]["images"][0]["url"],
                 )
 
+    async def refresh_access_token(self, refresh_token: str) -> SpotifyAccountBodySchema:
+        auth_header = base64.b64encode(f"{self.client_id}:{self.client_secret}".encode()).decode()
+
+        headers = {
+            "Authorization": f"Basic {auth_header}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+
+        data = {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+        }
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self.token_url, headers=headers, data=data) as response:
+                if response.status != 200:
+                    raise HTTPException(status_code=400, detail="Failed to refresh token")
+
+                response_data = await response.json()
+
+                if "refresh_token" not in response_data:
+                    response_data["refresh_token"] = refresh_token
+
+                return SpotifyAccountBodySchema.model_validate(response_data)
+
 
 async def get_spotify_service() -> SpotifyService:
     return SpotifyService()
