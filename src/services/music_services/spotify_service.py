@@ -21,14 +21,13 @@ class SpotifyService(MusicService):
 
     def get_auth_url(self) -> str:
         scope = "user-read-currently-playing"
-        auth_url = (
+        return (
             f"{self.auth_url}"
             f"?client_id={self.client_id}"
             f"&response_type=code"
             f"&redirect_uri={self.redirect_uri}"
             f"&scope={scope}"
         )
-        return auth_url
 
     async def get_tokens(self, code: str) -> SpotifyAccountBodySchema:
         auth_header = base64.b64encode(f"{self.client_id}:{self.client_secret}".encode()).decode()
