@@ -9,6 +9,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
 
   postgres:
     container_name: wolns-postgres
@@ -24,6 +26,44 @@ services:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
       - wolns-postgres-data:/var/lib/postgresql/data
+    restart: always
+
+  redis:
+    container_name: wolns-redis
+    image: redis:7
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+  celery_worker:
+    build: .
+    container_name: wolns-celery-worker
+    command: poetry run celery -A src.core.celery worker --loglevel=info --concurrency=5
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - .:/app
+    restart: always
+
+  celery_beat:
+    build: .
+    container_name: wolns-celery-beat
+    command: poetry run celery -A src.core.celery beat --loglevel=info
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - .:/app
     restart: always
 
   nginx:
