@@ -13,7 +13,8 @@ if TYPE_CHECKING:
 class YandexMusicAccount(BaseAccount, table=True):
     service_type: ClassVar[ServiceType] = ServiceType.YANDEX_MUSIC
 
-    token: str = Field(sa_column=Column(String(400), nullable=False))
+    access_token: str = Field(sa_column=Column(String(400), nullable=False))
+    refresh_token: str = Field(sa_column=Column(String(400), nullable=False))
 
     user: "User" = Relationship(
         back_populates="yandex_music_account",

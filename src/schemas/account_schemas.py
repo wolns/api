@@ -6,7 +6,8 @@ class AccountBodySchema(BaseModel):
 
 
 class YandexMusicAccountBodySchema(AccountBodySchema):
-    token: str
+    access_token: str
+    refresh_token: str
 
 
 class SpotifyAccountBodySchema(AccountBodySchema):
@@ -15,4 +16,4 @@ class SpotifyAccountBodySchema(AccountBodySchema):
 
 
 class VkMusicAccountBodySchema(AccountBodySchema):
-    token: str
+    access_token: str

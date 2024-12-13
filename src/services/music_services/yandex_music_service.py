@@ -127,13 +127,13 @@ class YandexMusicService(MusicService):
         return session, to_send, data["host"], json.dumps(new_ws_proto)
 
     async def get_current_track(self, obj: YandexMusicAccountBodySchema) -> TrackBaseInfo | None:
-        session, to_send, host, proto = await self.get_preynison(obj.token)
+        session, to_send, host, proto = await self.get_preynison(obj.access_token)
         async with session.ws_connect(
             url=f"wss://{host}/ynison_state.YnisonStateService/PutYnisonState",
             headers={
                 "Sec-WebSocket-Protocol": f"Bearer, v2, {proto}",
                 "Origin": "http://music.yandex.ru",
-                "Authorization": f"OAuth {obj.token}",
+                "Authorization": f"OAuth {obj.access_token}",
             },
             method="GET",
         ) as ws:
@@ -141,7 +141,7 @@ class YandexMusicService(MusicService):
             recv = await ws.receive()
             await session.close()
             ynison = json.loads(recv.data)
-            yandex_music_client = ClientAsync(token=obj.token)
+            yandex_music_client = ClientAsync(token=obj.access_token)
             await yandex_music_client.init()
             track = await self.track_from_ynison(yandex_music_client, ynison)
 
