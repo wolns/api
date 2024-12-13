@@ -14,6 +14,7 @@ uvicorn = "^0.32.1"
 sqlmodel = "^0.0.22"
 pyjwt = "^2.10.1"
 pytz = "^2024.2"
+aiohttp = "^3.11.10"
 
 
 [build-system]
