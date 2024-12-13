@@ -47,6 +47,22 @@ class AccountService:
     async def update_vk_music_account(self, user_uuid: UUID, obj: VkMusicAccountBodySchema) -> VkMusicAccount:
         return await self._update_account(self.vk_music_account_repository, user_uuid, obj, VkMusicAccount)
 
+    async def _get_account(
+        self,
+        account_repository: BaseAccountRepository,
+        user_uuid: UUID,
+    ) -> BaseAccount | None:
+        return await account_repository.get_by_user_uuid(user_uuid)
+
+    async def get_yandex_music_account(self, user_uuid: UUID) -> YandexMusicAccount | None:
+        return await self._get_account(self.yandex_music_account_repository, user_uuid)
+
+    async def get_spotify_account(self, user_uuid: UUID) -> SpotifyAccount | None:
+        return await self._get_account(self.spotify_account_repository, user_uuid)
+
+    async def get_vk_music_account(self, user_uuid: UUID) -> VkMusicAccount | None:
+        return await self._get_account(self.vk_music_account_repository, user_uuid)
+
 
 async def get_account_service(session: AsyncSession = Depends(get_async_session)) -> AccountService:
     return AccountService(session)
