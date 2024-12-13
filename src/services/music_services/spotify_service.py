@@ -3,7 +3,7 @@ import base64
 import aiohttp
 from fastapi import HTTPException
 
-from src.core.config import get_settings
+from src.core.config import get_spotify_settings
 from src.schemas.account_schemas import SpotifyAccountBodySchema
 from src.schemas.track_schemas import TrackBaseInfo
 from src.services.music_service import MusicService
@@ -11,10 +11,10 @@ from src.services.music_service import MusicService
 
 class SpotifyService(MusicService):
     def __init__(self):
-        settings = get_settings()
-        self.client_id = settings.spotify_client_id
-        self.client_secret = settings.spotify_client_secret
-        self.redirect_uri = settings.spotify_redirect_uri
+        spotify_settings = get_spotify_settings()
+        self.client_id = spotify_settings.spotify_client_id
+        self.client_secret = spotify_settings.spotify_client_secret
+        self.redirect_uri = spotify_settings.spotify_redirect_uri
         self.auth_url = "https://accounts.spotify.com/authorize"
         self.token_url = "https://accounts.spotify.com/api/token"
         self.api_base_url = "https://api.spotify.com/v1"

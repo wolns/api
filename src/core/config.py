@@ -1,6 +1,15 @@
 from pydantic.v1 import BaseSettings
 
 
+class SpotifySettings(BaseSettings):
+    spotify_client_id: str
+    spotify_client_secret: str
+    spotify_redirect_uri: str
+
+    class Config:
+        extra = "allow"
+
+
 class JWTSettings(BaseSettings):
     jwt_secret: str
     jwt_algorithm: str = "HS256"
@@ -67,3 +76,7 @@ def get_settings():
 
 def get_timezone_settings():
     return TimezoneSettings()
+
+
+def get_spotify_settings():
+    return SpotifySettings()
