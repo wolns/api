@@ -33,3 +33,7 @@ class BaseRepository(Generic[T], ABC):
     async def delete(self, obj: T) -> None:
         await self.session.delete(obj)
         await self.session.commit()
+
+    async def update(self, obj: T) -> None:
+        if await self.get(obj.uuid):
+            await self.session.commit()
