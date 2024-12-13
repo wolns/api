@@ -24,6 +24,9 @@ class TrackService:
     async def get_update_tracks(self) -> list[Track]:
         return await self.track_repository.get_update_tracks()
 
+    async def update_track(self, obj: Track) -> Track:
+        return await self.track_repository.update(obj)
+
     async def to_response_model(self, track: Track) -> TrackGetResponseSchema:
         threshold_time = datetime.now(tz) - timedelta(minutes=1)
         is_playing = track.updated_at > threshold_time
