@@ -4,10 +4,12 @@ import aiohttp
 from fastapi import HTTPException
 
 from src.core.config import get_settings
-from src.schemas.spotify_schemas import SpotifyCurrentTrackResponseSchema
+from src.schemas.account_schemas import SpotifyAccountBodySchema
+from src.schemas.track_schemas import TrackBaseInfo
+from src.services.music_service import MusicService
 
 
-class SpotifyService:
+class SpotifyService(MusicService):
     def __init__(self):
         settings = get_settings()
         self.client_id = settings.spotify_client_id
@@ -28,7 +30,7 @@ class SpotifyService:
         )
         return auth_url
 
-    async def get_tokens(self, code: str) -> dict:
+    async def get_tokens(self, code: str) -> SpotifyAccountBodySchema:
         auth_header = base64.b64encode(f"{self.client_id}:{self.client_secret}".encode()).decode()
 
         headers = {
@@ -46,10 +48,10 @@ class SpotifyService:
             async with session.post(self.token_url, headers=headers, data=data) as response:
                 if response.status != 200:
                     raise HTTPException(status_code=400, detail="Failed to get tokens")
-                return await response.json()
+                return await SpotifyAccountBodySchema.model_validate(response.json())
 
-    async def get_current_track(self, access_token: str) -> SpotifyCurrentTrackResponseSchema | None:
-        headers = {"Authorization": f"Bearer {access_token}"}
+    async def get_current_track(self, obj: SpotifyAccountBodySchema) -> TrackBaseInfo | None:
+        headers = {"Authorization": f"Bearer {obj.access_token}"}
 
         async with aiohttp.ClientSession() as session:
             async with session.get(f"{self.api_base_url}/me/player/currently-playing", headers=headers) as response:
@@ -63,11 +65,13 @@ class SpotifyService:
                 if not data.get("item"):
                     return None
 
-                return SpotifyCurrentTrackResponseSchema(
+                if not data["is_playing"]:
+                    return None
+
+                return TrackBaseInfo(
                     title=data["item"]["name"],
                     artists=", ".join(artist["name"] for artist in data["item"]["artists"]),
-                    cover_url=data["item"]["album"]["images"][0]["url"],
-                    is_playing=data["is_playing"],
+                    cover=data["item"]["album"]["images"][0]["url"],
                 )
 
 
