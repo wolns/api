@@ -1,5 +1,4 @@
 import base64
-from functools import lru_cache
 
 import aiohttp
 from fastapi import HTTPException
@@ -61,7 +60,6 @@ class SpotifyService:
                     raise HTTPException(status_code=400, detail="Failed to get current track")
 
                 data = await response.json()
-
                 if not data.get("item"):
                     return None
 
@@ -73,6 +71,5 @@ class SpotifyService:
                 )
 
 
-@lru_cache
-def get_spotify_service() -> SpotifyService:
+async def get_spotify_service() -> SpotifyService:
     return SpotifyService()
