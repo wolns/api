@@ -1,8 +1,10 @@
+from datetime import datetime
 from uuid import UUID
 
 from fastapi.params import Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from src.core.timezone import tz
 from src.database.database import get_async_session
 from src.models.account_model import BaseAccount
 from src.models.track_model import Track
@@ -57,6 +59,7 @@ class TrackUpdateService:
             track.artists = current_track.artists
             track.cover = current_track.cover
             track.service_type = music_service.service_type
+            track.updated_at = datetime.now(tz)
             return await self.track_service.update_track(track)
         return None
 
