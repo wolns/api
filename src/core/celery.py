@@ -1,4 +1,5 @@
 from celery import Celery
+from celery.schedules import crontab
 
 from src.core.config import get_redis_settings
 from src.core.timezone import tz
@@ -18,3 +19,10 @@ celery_app.conf.update(
     timezone=tz,
     enable_utc=True,
 )
+
+celery_app.conf.beat_schedule = {
+    "enqueue-user-track-updates-every-minute": {
+        "task": "enqueue_user_track_updates",
+        "schedule": crontab(minute="*"),
+    },
+}

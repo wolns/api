@@ -25,7 +25,7 @@ class TrackService:
         return await self.track_repository.update(obj)
 
     async def to_response_model(self, track: Track) -> TrackGetResponseSchema:
-        threshold_time = datetime.now(tz) - timedelta(minutes=1)
+        threshold_time = datetime.now(tz) - timedelta(minutes=2)
         is_playing = track.updated_at > threshold_time
         return TrackGetResponseSchema(
             user_name=track.user.name,
