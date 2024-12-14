@@ -4,6 +4,7 @@ import aiohttp
 from fastapi import HTTPException
 
 from src.core.config import get_spotify_settings
+from src.core.exceptions import TokenExpiredException
 from src.schemas.account_schemas import SpotifyAccountBodySchema
 from src.schemas.track_schemas import ServiceType, TrackBaseInfo
 from src.services.music_service import MusicService
@@ -56,11 +57,14 @@ class SpotifyService(MusicService):
 
         async with aiohttp.ClientSession() as session:
             async with session.get(f"{self.api_base_url}/me/player/currently-playing", headers=headers) as response:
+                if response.status == 401:
+                    raise TokenExpiredException
+
                 if response.status == 204:
                     return None
 
                 if response.status != 200:
-                    raise HTTPException(status_code=400, detail="Failed to get current track")
+                    return None
 
                 data = await response.json()
                 if not data.get("item"):
