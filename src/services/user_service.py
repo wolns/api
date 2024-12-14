@@ -31,7 +31,9 @@ class UserService:
         return None
 
     async def get_users_update_track(self) -> list[User]:
-        return await self.user_repository.get_without_track() + await self.user_repository.get_with_old_tracks()
+        users_without_tracks = await self.user_repository.get_without_track()
+        users_old_tracks = await self.user_repository.get_with_old_tracks()
+        return users_without_tracks + users_old_tracks
 
     async def get_user_by_uuid(self, user_uuid: UUID) -> User | None:
         return await self.user_repository.get(user_uuid)
