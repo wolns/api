@@ -5,9 +5,10 @@ import string
 
 import aiohttp
 from fastapi import HTTPException
-from src.core.config import get_yandex_music_settings
 from yandex_music import ClientAsync
 
+from src.core.config import get_yandex_music_settings
+from src.core.exceptions import TokenExpiredException
 from src.schemas.account_schemas import YandexMusicAccountBodySchema
 from src.schemas.track_schemas import ServiceType, TrackBaseInfo
 from src.services.music_service import MusicService
@@ -15,6 +16,7 @@ from src.services.music_service import MusicService
 
 class YandexMusicService(MusicService):
     service_type = ServiceType.YANDEX_MUSIC
+
     def __init__(self):
         yandex_music_settings = get_yandex_music_settings()
         self.client_id = yandex_music_settings.yandex_music_client_id
@@ -68,7 +70,7 @@ class YandexMusicService(MusicService):
                 if response.status != 200:
                     raise HTTPException(status_code=400, detail="Failed to refresh tokens")
                 return YandexMusicAccountBodySchema.model_validate(await response.json())
-    
+
     # TODO: rewrite
     async def track_from_ynison(self, yandex_music_client: ClientAsync, ynison):
         try:
@@ -128,6 +130,8 @@ class YandexMusicService(MusicService):
         data = json.loads(recv.data)
 
         new_ws_proto = ws_proto.copy()
+        if not data["redirect_ticket"]:
+            raise TokenExpiredException
         new_ws_proto["Ynison-Redirect-Ticket"] = data["redirect_ticket"]
 
         to_send = {
