@@ -18,6 +18,7 @@ celery = "^5.4.0"
 redis = "^5.2.1"
 aiohttp = "^3.11.10"
 yandex-music = "^2.2.0"
+gunicorn = "^23.0.0"
 
 
 
