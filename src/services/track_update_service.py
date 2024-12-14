@@ -4,6 +4,7 @@ from uuid import UUID
 from fastapi.params import Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from src.core.exceptions import TokenExpiredException
 from src.core.timezone import tz
 from src.database.database import get_async_session
 from src.models.account_model import BaseAccount
@@ -14,6 +15,7 @@ from src.services.music_services.spotify_service import SpotifyService
 from src.services.music_services.yandex_music_service import YandexMusicService
 from src.services.track_service import TrackService
 from src.services.user_service import UserService
+from src.tasks.token_update import token_update
 
 
 class TrackUpdateService:
@@ -46,8 +48,12 @@ class TrackUpdateService:
                 try:
                     if await self.update_user_track_with_service(account, music_service):
                         break
-                except:
-                    pass
+                except TokenExpiredException:
+                    token_update.delay(
+                        user_uuid=user_uuid,
+                        refresh_token=account.refresh_token,
+                        service_type=account.service_type,
+                    )
 
     async def update_user_track_with_service(self, account: BaseAccount, music_service: MusicService) -> Track | None:
         track = await self.track_service.get_track_by_user_uuid(account.user_uuid)
