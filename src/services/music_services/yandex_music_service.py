@@ -1,8 +1,11 @@
+import base64
 import json
 import random
 import string
 
 import aiohttp
+from fastapi import HTTPException
+from src.core.config import get_yandex_music_settings
 from yandex_music import ClientAsync
 
 from src.schemas.account_schemas import YandexMusicAccountBodySchema
@@ -12,7 +15,61 @@ from src.services.music_service import MusicService
 
 class YandexMusicService(MusicService):
     service_type = ServiceType.YANDEX_MUSIC
+    def __init__(self):
+        yandex_music_settings = get_yandex_music_settings()
+        self.client_id = yandex_music_settings.yandex_music_client_id
+        self.client_secret = yandex_music_settings.yandex_music_client_secret
+        self.redirect_uri = yandex_music_settings.yandex_music_redirect_uri
+        self.auth_url = "https://oauth.yandex.ru/authorize"
+        self.token_url = "https://oauth.yandex.ru/token"
 
+    def get_auth_url(self) -> str:
+        return (
+            f"{self.auth_url}"
+            f"?response_type=code"
+            f"&client_id={self.client_id}"
+            f"&redirect_uri={self.redirect_uri}"
+        )
+
+    async def get_tokens(self, code: str) -> YandexMusicAccountBodySchema:
+        auth_header = base64.b64encode(f"{self.client_id}:{self.client_secret}".encode()).decode()
+
+        headers = {
+            "Authorization": f"Basic {auth_header}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+
+        data = {
+            "grant_type": "authorization_code",
+            "code": code,
+        }
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self.token_url, headers=headers, data=data) as response:
+                if response.status != 200:
+                    raise HTTPException(status_code=400, detail="Failed to get tokens")
+                return YandexMusicAccountBodySchema.model_validate(await response.json())
+
+    async def refresh_tokens(self, refresh_token: str) -> YandexMusicAccountBodySchema:
+        auth_header = base64.b64encode(f"{self.client_id}:{self.client_secret}".encode()).decode()
+
+        headers = {
+            "Authorization": f"Basic {auth_header}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+
+        data = {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+        }
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self.token_url, headers=headers, data=data) as response:
+                if response.status != 200:
+                    raise HTTPException(status_code=400, detail="Failed to refresh tokens")
+                return YandexMusicAccountBodySchema.model_validate(await response.json())
+    
+    # TODO: rewrite
     async def track_from_ynison(self, yandex_music_client: ClientAsync, ynison):
         try:
             track = ynison["player_state"]["player_queue"]["playable_list"][

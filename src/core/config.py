@@ -10,6 +10,15 @@ class SpotifySettings(BaseSettings):
         extra = "allow"
 
 
+class YandexMusicSettings(BaseSettings):
+    yandex_music_client_id: str
+    yandex_music_client_secret: str
+    yandex_music_redirect_uri: str
+
+    class Config:
+        extra = "allow"
+
+
 class JWTSettings(BaseSettings):
     jwt_secret: str
     jwt_algorithm: str = "HS256"
@@ -48,6 +57,10 @@ class Settings(BaseSettings):
     spotify_client_id: str
     spotify_client_secret: str
     spotify_redirect_uri: str
+
+    yandex_music_client_id: str
+    yandex_music_client_secret: str
+    yandex_music_redirect_uri: str
 
     class Config:
         extra = "allow"
@@ -102,3 +115,5 @@ def get_redis_settings():
 def get_spotify_settings():
     return SpotifySettings()
 
+def get_yandex_music_settings():
+    return YandexMusicSettings()

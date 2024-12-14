@@ -75,7 +75,7 @@ class SpotifyService(MusicService):
                     cover=data["item"]["album"]["images"][0]["url"],
                 )
 
-    async def refresh_access_token(self, refresh_token: str) -> SpotifyAccountBodySchema:
+    async def refresh_tokens(self, refresh_token: str) -> SpotifyAccountBodySchema:
         auth_header = base64.b64encode(f"{self.client_id}:{self.client_secret}".encode()).decode()
 
         headers = {
