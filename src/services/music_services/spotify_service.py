@@ -77,6 +77,7 @@ class SpotifyService(MusicService):
                     title=data["item"]["name"],
                     artists=", ".join(artist["name"] for artist in data["item"]["artists"]),
                     cover=data["item"]["album"]["images"][0]["url"],
+                    duration_ms=data["item"]["duration_ms"],
                 )
 
     async def refresh_tokens(self, refresh_token: str) -> SpotifyAccountBodySchema:
