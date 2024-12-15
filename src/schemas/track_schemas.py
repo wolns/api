@@ -14,6 +14,7 @@ class TrackBaseInfo(BaseModel):
     artists: str
     cover: str
     duration_ms: int | None = None
+    progress_ms: int | None = None
 
 
 class TrackBaseSchema(TrackBaseInfo):
