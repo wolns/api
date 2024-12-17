@@ -19,6 +19,9 @@ redis = "^5.2.1"
 aiohttp = "^3.11.10"
 yandex-music = "^2.2.0"
 gunicorn = "^23.0.0"
+alembic = "^1.14.0"
+python-dotenv = "^1.0.1"
+greenlet = "^3.1.1"
 
 
 
