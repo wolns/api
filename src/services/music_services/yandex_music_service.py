@@ -217,6 +217,7 @@ class YandexMusicService(MusicService):
                 artists=", ".join(x.name for x in track["track"].artists),
                 cover="https://" + track["track"].cover_uri.replace("%%", "400x400"),
                 duration_ms=track["duration_ms"],
+                progress_ms=track["progress_ms"],
             )
 
 
