@@ -206,7 +206,7 @@ class YandexMusicService(MusicService):
             await yandex_music_client.init()
             track = await self.track_from_ynison(yandex_music_client, ynison)
 
-            if not track:
+            if not track or not track["track"]:
                 return None
 
             if track["paused"]:
