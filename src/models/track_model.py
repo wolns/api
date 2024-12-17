@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, Integer
 from sqlmodel import Field, Relationship
 
 from src.models.base_model import BaseUUIDModel
@@ -17,6 +17,8 @@ class Track(BaseUUIDModel, table=True):
     title: str = Field(sa_column=Column(String(100), nullable=False))
     artists: str = Field(sa_column=Column(String(100), nullable=False))
     cover: str = Field(sa_column=Column(String(200), nullable=False))
+    duration_ms: int = Field(sa_column=Column(Integer, nullable=True))
+    progress_ms: int = Field(sa_column=Column(Integer, nullable=True))
 
     user_uuid: UUID = Field(default=None, foreign_key="User.uuid")
     user: "User" = Relationship(
