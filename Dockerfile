@@ -4,7 +4,7 @@ EXPOSE 8000
 
 RUN pip install --no-cache-dir poetry
 
-WORKDIR /cube-api
+WORKDIR /wolns-api
 
 COPY pyproject.toml ./
 
@@ -12,4 +12,4 @@ RUN poetry install
 
 COPY . ./
 
-CMD poetry run gunicorn src:create_app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:2000
+CMD poetry run alembic upgrade head && poetry run gunicorn src:create_app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:2000
